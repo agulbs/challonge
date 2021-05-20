@@ -34,7 +34,7 @@ class Challonge
         $this->api_key = $api_key;
     }
 
-    public function request($method, $url, $data = null)
+    public function request(string $method, string $url, array $data = null)
     {
         $this->method = $method;
 
@@ -53,12 +53,11 @@ class Challonge
                 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data) );
                 break;
             case self::HTTP_PUT:
-                print_r($data);
-                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, self::HTTP_PUT);
                 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data) );
                 break;
             case self::HTTP_DELETE:
-                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, self::HTTP_DELETE);
                 break;
             default:
                 throw new \Exception("Error Processing Request", 1);

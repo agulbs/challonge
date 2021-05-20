@@ -16,15 +16,14 @@ $c = new Challonge("agulbs:z7zoLhwd3jxcEeDT2yiNpH6oI5Akksq5UX1XFODr");
 // $tournaments = $c->getTournaments(array('created_before'=>'2021-05-20'));
 // print_r($tournaments);
 
-
 // get single tournament by id or url
 // $tournament = $c->getTournament("k2powvuj");
 // echo $tournament->getName();
 
 // update fields of tournament
-// $arr = array('id' => 'k2powvuj', 'params' => array('description'=>"firstputrq boy") );
-// $tournament = $c->updateTournament($arr);
-// echo $tournament->getDescription();
+$arr = array('id' => '9826277', 'params' => array('description'=>"firstputrq boy") );
+$tournament = $c->updateTournament($arr);
+echo $tournament->getDescription();
 
 // delete a tournament
 // $tournament = $c->destroyTournament("k2powvuj");
