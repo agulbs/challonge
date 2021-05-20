@@ -1,7 +1,7 @@
 <?php
 
 include 'Tournament.php';
-
+include 'Participant.php';
 
 class Challonge
 {
@@ -50,7 +50,10 @@ class Challonge
                 break;
             case self::HTTP_POST:
                 curl_setopt($ch, CURLOPT_POST, true);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data) );
+                if(!is_null($data))
+                {
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data) );
+                }
                 break;
             case self::HTTP_PUT:
                 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, self::HTTP_PUT);
@@ -91,7 +94,7 @@ class Challonge
                 throw new Exception("Internal Server Err.");
                 break;
             case self::HTTP_CODE_422:
-                throw new Exception("Validation Err.");
+                throw new Exception("Validation Err." . implode(', ', $this->responseData['errors']));
                 break;
             case self::HTTP_CODE_406:
                 throw new Exception("Unsupported Format.");
@@ -194,7 +197,7 @@ class Challonge
     public function updateTournament($data)
     {
         $method = self::HTTP_PUT;
-        $url    = $this->baseUrl . "tournaments/{$data['id']}.json";
+        $url    = $this->baseUrl . "tournaments/{$data['tid']}.json";
         $this->request($method, $url, $data['params']);
         return new Tournament($this->responseData['tournament']);
     }
@@ -209,7 +212,7 @@ class Challonge
     public function processCheckins($data)
     {
         $method = self::HTTP_POST;
-        $url    = $this->baseUrl . "tournaments/{$data['id']}/process_check_ins.json";
+        $url    = $this->baseUrl . "tournaments/{$data['tid']}/process_check_ins.json";
         $this->request($method, $url, $data['params']);
         return new Tournament($this->responseData['tournament']);
     }
@@ -217,7 +220,7 @@ class Challonge
     public function abortCheckins($data)
     {
         $method = self::HTTP_POST;
-        $url    = $this->baseUrl . "tournaments/{$data['id']}/abort_check_in.json";
+        $url    = $this->baseUrl . "tournaments/{$data['tid']}/abort_check_in.json";
         $this->request($method, $url, $data['params']);
         return new Tournament($this->responseData['tournament']);
     }
@@ -225,7 +228,7 @@ class Challonge
     public function startTournament()
     {
         $method = self::HTTP_POST;
-        $url    = $this->baseUrl . "tournaments/{$data['id']}/start.json";
+        $url    = $this->baseUrl . "tournaments/{$data['tid']}/start.json";
         $this->request($method, $url, $data['params']);
         return new Tournament($this->responseData['tournament']);
     }
@@ -233,7 +236,7 @@ class Challonge
     public function finalizeTournament()
     {
         $method = self::HTTP_POST;
-        $url    = $this->baseUrl . "tournaments/{$data['id']}/finalize.json";
+        $url    = $this->baseUrl . "tournaments/{$data['tid']}/finalize.json";
         $this->request($method, $url, $data['params']);
         return new Tournament($this->responseData['tournament']);
     }
@@ -241,7 +244,7 @@ class Challonge
     public function resetTournament()
     {
         $method = self::HTTP_POST;
-        $url    = $this->baseUrl . "tournaments/{$data['id']}/reset.json";
+        $url    = $this->baseUrl . "tournaments/{$data['tid']}/reset.json";
         $this->request($method, $url, $data['params']);
         return new Tournament($this->responseData['tournament']);
     }
@@ -249,9 +252,99 @@ class Challonge
     public function openForPredictions()
     {
         $method = self::HTTP_POST;
-        $url    = $this->baseUrl . "tournaments/{$data['id']}/open_for_predictions.json";
+        $url    = $this->baseUrl . "tournaments/{$data['tid']}/open_for_predictions.json";
         $this->request($method, $url, $data['params']);
         return new Tournament($this->responseData['tournament']);
+    }
+
+    /* Participant API Calls */
+    public function getAllParticipants($data)
+    {
+        $method = self::HTTP_GET;
+        $url = $this->baseUrl . "tournaments/{$data['tid']}/participants.json";
+        $this->request($method, $url);
+
+        $participants = array();
+        foreach ($this->responseData as $t => $value) {
+            array_push($participants, new Participant($value['participant']));
+        }
+        return $participants;
+    }
+
+    public function getParticpant($data)
+    {
+        $method = self::HTTP_GET;
+        $url = $this->baseUrl . "tournaments/{$data['tid']}/participants/{$data['pid']}.json";
+        $this->request($method, $url);
+        return new Participant($this->responseData['participant']);
+    }
+
+    public function createParticipant($data)
+    {
+        $method = self::HTTP_POST;
+        $url = $this->baseUrl . "tournaments/{$data['tid']}/participants.json";
+        $this->request($method, $url, $data['params']);
+        return new Participant($this->responseData['participant']);
+    }
+
+    public function createBulkParticipant($data)
+    {
+        $method = self::HTTP_POST;
+        $url = $this->baseUrl . "tournaments/{$data['tid']}/participants/bulk_add.json";
+        $this->request($method, $url, $data['params']);
+
+        $participants = array();
+        foreach ($this->responseData as $t => $value) {
+            array_push($participants, new Participant($value['participant']));
+        }
+        return $participants;
+    }
+
+    public function updateParticpant($data)
+    {
+        $method = self::HTTP_PUT;
+        $url = $this->baseUrl . "tournaments/{$data['tid']}/participants/{$data['pid']}.json";
+        $this->request($method, $url, $data['params']);
+        return new Participant($this->responseData['particpant']);
+    }
+
+    public function checkinParticpant($data)
+    {
+        $method = self::HTTP_POST;
+        $url = $this->baseUrl . "tournaments/{$data['tid']}/participants/{$data['pid']}/check_in.json";
+        $this->request($method, $url);
+        return new Participant($this->responseData['particpant']);
+    }
+
+    public function undoCheckinParticpant($data)
+    {
+        $method = self::HTTP_POST;
+        $url = $this->baseUrl . "tournaments/{$data['tid']}/participants/{$data['pid']}/undo_check_in.json";
+        $this->request($method, $url);
+        return new Participant($this->responseData['particpant']);
+    }
+
+    public function destroyParticpant($data)
+    {
+        $method = self::HTTP_DELETE;
+        $url = $this->baseUrl . "tournaments/{$data['tid']}/participants/{$data['pid']}.json";
+        $this->request($method, $url);
+        return new Participant($this->responseData['particpant']);
+    }
+
+    public function clearParticpants($data)
+    {
+        $method = self::HTTP_DELETE;
+        $url = $this->baseUrl . "tournaments/{$data['tid']}/participants/clear.json";
+        $this->request($method, $url);
+        return $this->responseData['message'];
+    }
+
+    public function randomizeParticipants($data)
+    {
+        $method = self::HTTP_POST;
+        $url = $this->baseUrl . "tournaments/{$data['tid']}/participants/randomize.json";
+        $this->request($method, $url);
     }
 
 }
