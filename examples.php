@@ -2,11 +2,14 @@
 include 'Challonge.php';
 // include 'Tournament.php'
 
+
 $c = new Challonge("agulbs:z7zoLhwd3jxcEeDT2yiNpH6oI5Akksq5UX1XFODr");
 
-// creat a tournament
-// $tournament = $c->createTournament(array('name' => "tt man"));
+// create a tournament
+// $tournament = $c->createTournament(array('name' => "test tournament name"));
 // echo $tournament->getName();
+// echo "<br>";
+// var_dump($tournament);
 
 // get all tournaments
 // $tournaments = $c->getAllTournaments();
@@ -17,7 +20,7 @@ $c = new Challonge("agulbs:z7zoLhwd3jxcEeDT2yiNpH6oI5Akksq5UX1XFODr");
 // print_r($tournaments);
 
 // get single tournament by id or url
-// $tournament = $c->getTournament("k2powvuj");
+// $tournament = $c->getTournament('k2powvuj');
 // echo $tournament->getName();
 
 // update fields of tournament

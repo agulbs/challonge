@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+
+    <title>Challonge Admin Portal</title>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row" style="background-color:#343a40">
+            <div class="col-12 mt-2">
+                <h5 style="color:#ebecee">Admin Portal</h5>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row mt-3">
+            <div class="col-1"></div>
+            <div class="col-10">
+                <div class="row">
+                    <div class="col-12" style="background-color:#343a40; color:#ebecee">
+                        <h6 class="m-2">Create Tournament</h6>
+                    </div>
+                    <div class="col-12 pt-2 pb-3" style="border: solid 1px #343a40;">
+                        <div class="row">
+                            <div class="col-12"><button class="btn btn-primary" onclick="createTournament()">Create Tournament</button></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-1"></div>
+
+        </div>
+        <div class="row mt-3">
+            <div class="col-1"></div>
+            <div class="col-10" id="tournamentData" style="max-height:200px;overflow:auto"></div>
+            <div class="col-1"></div>
+        </div>
+    </div>
+
+    <script>
+        var allTournaments;
+        $(document).ready(function() {
+            getAllTournaments();
+        });
+
+        function getAllTournaments() {
+            var params = {
+                type: "POST",
+                data: {
+                    proc: "getAllTournaments"
+                }
+            };
+
+            requestData(params).then(res => {
+                renderAllTournaments(JSON.parse(res))
+            })
+        }
+
+        function renderAllTournaments(tournaments) {
+            allTournaments = tournaments;
+            console.log(tournaments)
+            $('#tournamentData').empty()
+            tournaments.forEach((tournament, i) => {
+                tournament['show'] = false;
+                $('#tournamentData').append(`
+                <div class="row mt-3" id="tournamentData" >
+                    <div class="col-12" style="background-color:#343a40; color:#ebecee"><h6 class="m-2" onclick="triggerDisplay(${i})">${tournament.name}</h6></div>
+                    <div class="col-12" style="border: solid 1px #343a40;" >
+                        <div class="row  mt-2" id="tournament${i}" style="display:none">
+                            <div class="col-3 mb-2"><input class="form-control" placeholder="Accept Attachments: ${tournament.accept_attachments}" id="accept_attachments"></div>
+                            <div class="col-3 mb-2"><input class="form-control" placeholder="Check In Duration: ${tournament.check_in_duration}" id="check_in_duration"></div>
+                            <div class="col-3 mb-2"><input class="form-control" placeholder="Description: ${tournament.description}" id="description"></div>
+                            <div class="col-3 mb-2"><input class="form-control" placeholder="Grand Finals Modifier: ${tournament.grand_finals_modifier}" id="grand_finals_modifier"></div>
+                            <div class="col-3 mb-2"><input class="form-control" placeholder="Hide Forum: ${tournament.hide_forum}" id="hide_forum"></div>
+                            <div class="col-3 mb-2"><input class="form-control" placeholder="Hold Third Place Match: ${tournament.hold_third_place_match}" id="hold_third_place_match"></div>
+                            <div class="col-3 mb-2"><input class="form-control" placeholder="Id: ${tournament.id}" id="id"></div>
+                            <div class="col-3 mb-2"><input class="form-control" placeholder="Name: ${tournament.name}" id="name"></div>
+                            <div class="col-3 mb-2"><input class="form-control" placeholder="Notify Users When Matches Open: ${tournament.notify_users_when_matches_open}" id="notify_users_when_matches_open"></div>
+                            <div class="col-3 mb-2"><input class="form-control" placeholder="Notify Users When The Tournament Ends: ${tournament.notify_users_when_the_tournament_ends}" id="notify_users_when_the_tournament_ends"></div>
+                            <div class="col-3 mb-2"><input class="form-control" placeholder="Open Signup: ${tournament.open_signup}" id="open_signup"></div>
+                            <div class="col-3 mb-2"><input class="form-control" placeholder="Private: ${tournament.private}" id="private"></div>
+                            <div class="col-3 mb-2"><input class="form-control" placeholder="Pts For Bye: ${tournament.pts_for_bye}" id="pts_for_bye"></div>
+                            <div class="col-3 mb-2"><input class="form-control" placeholder="Pts For Game Tie: ${tournament.pts_for_game_tie}" id="pts_for_game_tie"></div>
+                            <div class="col-3 mb-2"><input class="form-control" placeholder="Pts For Game Win: ${tournament.pts_for_game_win}" id="pts_for_game_win"></div>
+                            <div class="col-3 mb-2"><input class="form-control" placeholder="Pts For Match Tie: ${tournament.pts_for_match_tie}" id="pts_for_match_tie"></div>
+                            <div class="col-3 mb-2"><input class="form-control" placeholder="Pts For Match Win: ${tournament.pts_for_match_win}" id="pts_for_match_win"></div>
+                            <div class="col-3 mb-2"><input class="form-control" placeholder="Ranked By: ${tournament.ranked_by}" id="ranked_by"></div>
+                            <div class="col-3 mb-2"><input class="form-control" placeholder="Rr Pts For Game Tie: ${tournament.rr_pts_for_game_tie}" id="rr_pts_for_game_tie"></div>
+                            <div class="col-3 mb-2"><input class="form-control" placeholder="Rr Pts For Game Win: ${tournament.rr_pts_for_game_win}" id="rr_pts_for_game_win"></div>
+                            <div class="col-3 mb-2"><input class="form-control" placeholder="Rr Pts For Match Tie: ${tournament.rr_pts_for_match_tie}" id="rr_pts_for_match_tie"></div>
+                            <div class="col-3 mb-2"><input class="form-control" placeholder="Rr Pts For Match Win: ${tournament.rr_pts_for_match_win}" id="rr_pts_for_match_win"></div>
+                            <div class="col-3 mb-2"><input class="form-control" placeholder="Sequential Pairings: ${tournament.sequential_pairings}" id="sequential_pairings"></div>
+                            <div class="col-3 mb-2"><input class="form-control" placeholder="Show Rounds: ${tournament.show_rounds}" id="show_rounds"></div>
+                            <div class="col-3 mb-2"><input class="form-control" placeholder="Signup Cap: ${tournament.signup_cap}" id="signup_cap"></div>
+                            <div class="col-3 mb-2"><input class="form-control" placeholder="Start At: ${tournament.start_at}" id="start_at"></div>
+                            <div class="col-3 mb-2"><input class="form-control" placeholder="Subdomain: ${tournament.subdomain}" id="subdomain"></div>
+                            <div class="col-3 mb-2"><input class="form-control" placeholder="Swiss Rounds: ${tournament.swiss_rounds}" id="swiss_rounds"></div>
+                            <div class="col-3 mb-2"><input class="form-control" placeholder="Type: ${tournament._type}" id="_type"></div>
+                            <div class="col-3 mb-2"><input class="form-control" placeholder="Url: ${tournament.url}" id="url"></div>
+                            <div class="col-6"></div>
+                            <div class="col-1 d-flex mb-2">
+                                <button class="btn btn-primary" onclick="updateTournament(${i})">Update</button>
+                            </div>
+                            <div class="col-3 d-flex justify-content-center mb-2">
+                                <button class="btn btn-primary" onclick="processCheckins(${i})">Process Checkins</button>
+                            </div>
+                            <div class="col-2 d-flex mb-2">
+                                <button class="btn btn-primary" onclick="abortCheckins(${i})">Abort Checkins</button>
+                            </div>
+                            <div class="col-1 d-flex mb-2">
+                                <button class="btn btn-primary" onclick="startTournament(${i})">Start</button>
+                            </div>
+                            <div class="col-1 d-flex mb-2">
+                                <button class="btn btn-primary" onclick="finalizeTournament(${i})">Finalize</button>
+                            </div>
+                            <div class="col-1 d-flex mb-2">
+                                <button class="btn btn-primary" onclick="resetTournament(${i})">Reset</button>
+                            </div>
+                            <div class="col-1 d-flex mb-2">
+                                <button class="btn btn-primary" onclick="updateTournament(${i})">Update</button>
+                            </div>
+                            <div class="col-2 d-flex mb-2">
+                                <button class="btn btn-primary" onclick="openForPredictions(${i})">Predictions</button>
+                            </div>
+                            <div class="col-1 d-flex mb-2">
+                                <button class="btn btn-danger" onclick="deleteTournament(${i})">Delete</button>
+                            </div>
+                            <div class="col-1"></div>
+                        </div>
+                    </div>
+                </div>
+                `)
+            })
+        }
+
+        function createTournament() {
+            var params = {
+                type: "POST",
+                data: {
+                    proc: "createTournament",
+                    data: {
+                        name: `New Tournament Created ${new Date().toLocaleTimeString()}`
+                    }
+                }
+            };
+
+            requestData(params).then(res => {
+                allTournaments.unshift(JSON.parse(res))
+                renderAllTournaments(allTournaments);
+            })
+        }
+
+        function updateTournament(idx) {
+            var tournament = {};
+            var params = {
+                type: "POST",
+                data: {
+                    proc: "updateTournament",
+                    data: {
+                        params: {}
+                    }
+                }
+            };
+
+            $(`#tournament${idx} input`).each((i, elem) => {
+                if (elem.value.length > 0) {
+                    params.data.data.params[elem.id] = elem.value.trim();
+                }
+            });
+
+            console.log(params);
+
+            if (Object.keys(params.data.data.params) < 1) {
+                return false;
+            }
+
+            params.data.data['tid'] = allTournaments[idx]['id'];
+
+            requestData(params).then(res => {
+                console.log(res)
+                alert('Updated');
+                getAllTournaments();
+            })
+
+            console.log(params)
+
+        }
+
+        function processCheckins(idx) {
+            var params = {
+                type: "POST",
+                data: {
+                    proc: "processCheckins",
+                    data: {
+                        tid: allTournaments[idx]['id'],
+                        params: {}
+                    }
+                }
+            };
+
+            requestData(params).then(res => {
+                console.log(res)
+                alert('Processing Checkins');
+            })
+        }
+
+        function abortCheckins(idx) {
+            var params = {
+                type: "POST",
+                data: {
+                    proc: "abortCheckins",
+                    data: {
+                        tid: allTournaments[idx]['id'],
+                        params: {}
+                    }
+                }
+            };
+
+            requestData(params).then(res => {
+                console.log(res)
+                alert('Aborting Checkins');
+            })
+        }
+
+
+        function startTournament(idx) {
+            var params = {
+                type: "POST",
+                data: {
+                    proc: "startTournament",
+                    data: {
+                        tid: allTournaments[idx]['id'],
+                        params: {}
+                    }
+                }
+            };
+
+            requestData(params).then(res => {
+                console.log(res)
+                alert('Starting Tournament');
+            })
+        }
+
+        function finalizeTournament(idx) {
+            var params = {
+                type: "POST",
+                data: {
+                    proc: "finalizeTournament",
+                    data: {
+                        tid: allTournaments[idx]['id'],
+                        params: {}
+                    }
+                }
+            };
+
+            requestData(params).then(res => {
+                console.log(res)
+                alert('Finalizing Tournament');
+            })
+        }
+
+        function resetTournament(idx) {
+            var params = {
+                type: "POST",
+                data: {
+                    proc: "resetTournament",
+                    data: {
+                        tid: allTournaments[idx]['id'],
+                        params: {}
+                    }
+                }
+            };
+
+            requestData(params).then(res => {
+                console.log(res)
+                alert('Tournament Reset');
+            })
+        }
+
+        function openForPredictions(idx) {
+            var params = {
+                type: "POST",
+                data: {
+                    proc: "openForPredictions",
+                    data: {
+                        tid: allTournaments[idx]['id'],
+                        params: {}
+                    }
+                }
+            };
+
+            requestData(params).then(res => {
+                console.log(res)
+                alert('Open for  Predictions');
+            })
+        }
+
+        function deleteTournament(idx) {
+            var params = {
+                type: "POST",
+                data: {
+                    proc: "deleteTournament",
+                    data: allTournaments[idx]['id']
+                }
+            }
+
+            requestData(params).then(res => {
+                console.log(res)
+                // alert('Deleted');
+                getAllTournaments();
+            })
+        }
+
+        function triggerDisplay(idx) {
+            if (allTournaments[idx]['show']) {
+                $(`#tournament${idx}`).hide();
+                allTournaments[idx]['show'] = false;
+            } else {
+                $(`#tournament${idx}`).show();
+                allTournaments[idx]['show'] = true;
+            }
+        }
+
+        async function requestData(params) {
+            return await request(params);
+        }
+
+        function request(params) {
+            return $.ajax({
+                url: "api/api.php",
+                type: params['type'],
+                contentType: "application/json",
+                data: JSON.stringify(params['data'])
+            });
+        }
+    </script>
+
+
+</body>
+
+</html>

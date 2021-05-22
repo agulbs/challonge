@@ -207,6 +207,7 @@ class Challonge
         $method = self::HTTP_DELETE;
         $url    = $this->baseUrl . "tournaments/$data.json";
         $this->request($method, $url);
+        return 1;
     }
 
     public function processCheckins($data)
@@ -225,7 +226,7 @@ class Challonge
         return new Tournament($this->responseData['tournament']);
     }
 
-    public function startTournament()
+    public function startTournament($data)
     {
         $method = self::HTTP_POST;
         $url    = $this->baseUrl . "tournaments/{$data['tid']}/start.json";
@@ -233,7 +234,7 @@ class Challonge
         return new Tournament($this->responseData['tournament']);
     }
 
-    public function finalizeTournament()
+    public function finalizeTournament($data)
     {
         $method = self::HTTP_POST;
         $url    = $this->baseUrl . "tournaments/{$data['tid']}/finalize.json";
@@ -241,7 +242,7 @@ class Challonge
         return new Tournament($this->responseData['tournament']);
     }
 
-    public function resetTournament()
+    public function resetTournament($data)
     {
         $method = self::HTTP_POST;
         $url    = $this->baseUrl . "tournaments/{$data['tid']}/reset.json";
@@ -249,7 +250,7 @@ class Challonge
         return new Tournament($this->responseData['tournament']);
     }
 
-    public function openForPredictions()
+    public function openForPredictions($data)
     {
         $method = self::HTTP_POST;
         $url    = $this->baseUrl . "tournaments/{$data['tid']}/open_for_predictions.json";

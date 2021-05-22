@@ -1,37 +1,37 @@
 <?php
 
-Class Tournament
+Class Tournament implements JsonSerializable
 {
-    protected $id;
-    protected $name;
-    protected $tournament_type;
-    protected $url;
-    protected $subdomain;
-    protected $description;
-    protected $open_signup;
-    protected $hold_third_place_match;
-    protected $pts_for_match_win;
-    protected $pts_for_match_tie;
-    protected $pts_for_game_win;
-    protected $pts_for_game_tie;
-    protected $pts_for_bye;
-    protected $swiss_rounds;
-    protected $ranked_by;
-    protected $rr_pts_for_match_win;
-    protected $rr_pts_for_match_tie;
-    protected $rr_pts_for_game_win;
-    protected $rr_pts_for_game_tie;
-    protected $accept_attachments;
-    protected $hide_forum;
-    protected $show_rounds;
-    protected $private;
-    protected $notify_users_when_matches_open;
-    protected $notify_users_when_the_tournament_ends;
-    protected $sequential_pairings;
-    protected $signup_cap;
-    protected $start_at;
-    protected $check_in_duration;
-    protected $grand_finals_modifier;
+    public $id;
+    public $name;
+    public $tournament_type;
+    public $url;
+    public $subdomain;
+    public $description;
+    public $open_signup;
+    public $hold_third_place_match;
+    public $pts_for_match_win;
+    public $pts_for_match_tie;
+    public $pts_for_game_win;
+    public $pts_for_game_tie;
+    public $pts_for_bye;
+    public $swiss_rounds;
+    public $ranked_by;
+    public $rr_pts_for_match_win;
+    public $rr_pts_for_match_tie;
+    public $rr_pts_for_game_win;
+    public $rr_pts_for_game_tie;
+    public $accept_attachments;
+    public $hide_forum;
+    public $show_rounds;
+    public $private;
+    public $notify_users_when_matches_open;
+    public $notify_users_when_the_tournament_ends;
+    public $sequential_pairings;
+    public $signup_cap;
+    public $start_at;
+    public $check_in_duration;
+    public $grand_finals_modifier;
 
     public function __construct($args)
     {
@@ -65,6 +65,10 @@ Class Tournament
         $this->start_at = $args['start_at'];
         $this->check_in_duration = $args['check_in_duration'];
         $this->grand_finals_modifier = $args['grand_finals_modifier'];
+    }
+
+    public function jsonSerialize() {
+        return $this;
     }
 
      public function getId(){ return $this->id; }
